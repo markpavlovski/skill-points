@@ -9,6 +9,7 @@ var windowHalfX = window.innerWidth / 2;
 let pi = Math.PI
 let cos = Math.cos
 let sin = Math.sin
+let objects = []
 
 init();
 animate();
@@ -90,6 +91,8 @@ function init() {
     particles.position.set(x, y, z + 25);
     particles.rotation.set(rx, ry, rz);
     particles.scale.set(s, s, s);
+    objects.push(particles)
+    console.log(scene.children)
     group.add(particles);
 
   }
@@ -147,6 +150,33 @@ function createCanvasMaterial(color, size) {
   // return a texture made from the canvas
   return texture;
 }
+
+
+// Interactions with spheres
+
+
+window.addEventListener("mousedown",()=>{
+
+  let projector = new THREE.Projector()
+  let mouseClickVector = new THREE.Vector3(
+    (event.clientX / window.innerWidth) * 2 - 1,
+    (event.clientY / window.innerHeight) *2 + 1,
+    0.5
+  )
+  mouseClickVector.unproject(camera)
+  let raycaster = new THREE.Raycaster(
+    camera.position,
+    mouseClickVector.sub(camera.position).normalize()
+  )
+  let intersects = raycaster.intersectObjects(objects)
+  console.log(intersects)
+  if (intersects.length > 0){
+    intersects[0].object.material.color.setHex(Math.random()* 0xffffff)
+  }
+
+
+
+}, false)
 
 
 // ANIMATE & RENDER
