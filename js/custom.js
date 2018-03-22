@@ -72,16 +72,7 @@ function init() {
     mesh.rotation.set(rx, ry, rz);
     mesh.scale.set(s, s, s);
     group.add(mesh);
-
-    // extruded shape
-    var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-    var mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
-      color: color
-    }));
-    mesh.position.set(x, y, z - 75);
-    mesh.rotation.set(rx, ry, rz);
-    mesh.scale.set(s, s, s);
-    group.add(mesh);
+  
 
     // Add Line Shapes
     addLineShape(shape, color, x, y, z, rx, ry, rz, s);
@@ -98,18 +89,6 @@ function init() {
 
 
 
-    // solid line
-    var line = new THREE.Line(geometryPoints, new THREE.LineBasicMaterial({
-      color: color,
-      linewidth: 3
-    }));
-    line.position.set(x, y, z - 25);
-    line.rotation.set(rx, ry, rz);
-    line.scale.set(s, s, s);
-    group.add(line);
-
-
-
     // line from equidistance sampled points
     var line = new THREE.Line(geometrySpacedPoints, new THREE.LineBasicMaterial({
       color: color,
@@ -122,23 +101,11 @@ function init() {
 
 
 
-    // vertices from real points
-    var particles = new THREE.Points(geometryPoints, new THREE.PointsMaterial({
-      color: color,
-      size: 4
-    }));
-    particles.position.set(x, y, z + 75);
-    particles.rotation.set(rx, ry, rz);
-    particles.scale.set(s, s, s);
-    group.add(particles);
-
-
-
     // equidistance sampled points
     var particles = new THREE.Points(geometrySpacedPoints, new THREE.PointsMaterial({
       // color: color,
       size: 20,
-      map: createCanvasMaterial('#'+'FF0000', 256),
+      map: createCanvasMaterial('#' + 'FF0000', 256),
       transparent: true,
       depthWrite: false
     }));
@@ -146,6 +113,7 @@ function init() {
     particles.rotation.set(rx, ry, rz);
     particles.scale.set(s, s, s);
     group.add(particles);
+
   }
 
 
