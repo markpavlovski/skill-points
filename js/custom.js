@@ -12,6 +12,9 @@ let sin = Math.sin
 let objects = []
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
+let splineShape = new THREE.Shape();
+let splinepts = [];
+
 
 
 init();
@@ -58,73 +61,9 @@ function init() {
   texture.repeat.set(0.008, 0.008); // it's necessary to apply these settings in order to correctly display the texture on a shape geometry
 
 
-
-  function addShape(shape, color, x, y, z, rx, ry, rz, s, n) {
-    // Add Line Shapes
-    addLineShape(shape, color, x, y, z, rx, ry, rz, s, n);
-  }
+  createShape(3)
 
 
-  function addLineShape(shape, color, x, y, z, rx, ry, rz, s, n) {
-
-    // lines
-    var spacedPoints = splinepts;
-    var geometrySpacedPoints = new THREE.BufferGeometry().setFromPoints(spacedPoints);
-
-    // line from equidistance sampled points
-    var line = new THREE.Line(geometrySpacedPoints, new THREE.LineBasicMaterial({
-      color: color,
-      linewidth: 3
-    }));
-    line.position.set(x, y, z + 25);
-    line.rotation.set(rx, ry, rz);
-    line.scale.set(s, s, s);
-    group.add(line);
-
-
-
-    // equidistance sampled points
-    var particles = new THREE.Points(geometrySpacedPoints, new THREE.PointsMaterial({
-      // color: color,
-      size: 15,
-      map: createCanvasMaterial('#' + '515151', 256),
-      transparent: true,
-      depthWrite: false
-    }));
-    particles.position.set(x, y, z + 25);
-    particles.rotation.set(rx, ry, rz);
-    particles.scale.set(s, s, s);
-    group.add(particles);
-
-  }
-
-
-  // Object Shape
-  var splinepts = [];
-
-  let n = 12
-  for (let i = 0; i <= n; i++) {
-    splinepts.push(new THREE.Vector2(100 * cos(i / n * 2 * pi), 100 * sin(i / n * 2 * pi)));
-    if (i < n) {
-      var sphere = new THREE.Mesh(new THREE.SphereGeometry(10, 5, 5), new THREE.MeshBasicMaterial({
-        color: 0xff0000,
-        wireframe: true
-      }));
-      sphere.position.x = 100 * cos(i / n * 2 * pi)
-      sphere.position.y = 100 * sin(i / n * 2 * pi)
-      sphere.position.z = 25
-      sphere.name = `sphere${i}`
-      group.add(sphere);
-      objects.push(sphere)
-    }
-  }
-
-  var splineShape = new THREE.Shape();
-  // splineShape.moveTo(0, 0);
-  splineShape.splineThru(splinepts);
-
-
-  addShape(splineShape, 0x515151, 0, 0, 0, 0, 0, 0, 1, 1);
 
   //  RENDERER SETTINGS
   renderer = new THREE.WebGLRenderer({
@@ -165,6 +104,62 @@ function createCanvasMaterial(color, size) {
 }
 
 
+function createShape(n) {
+  // Object Shape
+  while (splinepts[0]) splinepts.pop()
+  for (let i = 0; i <= n; i++) {
+    splinepts.push(new THREE.Vector2(100 * cos(i / n * 2 * pi), 100 * sin(i / n * 2 * pi)));
+    if (i < n) {
+      var sphere = new THREE.Mesh(new THREE.SphereGeometry(10, 5, 5), new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        wireframe: true
+      }));
+      sphere.position.x = 100 * cos(i / n * 2 * pi)
+      sphere.position.y = 100 * sin(i / n * 2 * pi)
+      sphere.position.z = 25
+      sphere.name = `sphere${i}`
+      group.add(sphere);
+      objects.push(sphere)
+    }
+  }
+  splineShape.splineThru(splinepts);
+  addLineShape(splineShape, 0x515151, 0, 0, 0, 0, 0, 0, 1, 1);
+}
+
+
+  function addLineShape(shape, color, x, y, z, rx, ry, rz, s, n) {
+
+    // lines
+    var spacedPoints = splinepts;
+    var geometrySpacedPoints = new THREE.BufferGeometry().setFromPoints(spacedPoints);
+
+    // line from equidistance sampled points
+    var line = new THREE.Line(geometrySpacedPoints, new THREE.LineBasicMaterial({
+      color: color,
+      linewidth: 3
+    }));
+    line.position.set(x, y, z + 25);
+    line.rotation.set(rx, ry, rz);
+    line.scale.set(s, s, s);
+    group.add(line);
+
+
+    // particles
+    var particles = new THREE.Points(geometrySpacedPoints, new THREE.PointsMaterial({
+      // color: color,
+      size: 15,
+      map: createCanvasMaterial('#' + '515151', 256),
+      transparent: true,
+      depthWrite: false
+    }));
+    particles.position.set(x, y, z + 25);
+    particles.rotation.set(rx, ry, rz);
+    particles.scale.set(s, s, s);
+    group.add(particles);
+
+  }
+
+
 // Interactions with spheres
 
 window.addEventListener("mousedown", (event) => {
@@ -185,13 +180,17 @@ function animate() {
 function render() {
 
   group.rotation.y += (targetRotation - group.rotation.y) * 0.05;
-  raycaster.setFromCamera( mouse, camera );
+  raycaster.setFromCamera(mouse, camera);
 
   // calculate objects intersecting the picking ray
   var intersects = raycaster.intersectObjects(objects);
 
   for (var i = 0; i < intersects.length; i++) {
     intersects[0].object.material.color.set(0x00ff00);
+    while (group.children[0]){
+      group.remove(group.children[0])
+    }
+    createShape(10)
   }
 
   renderer.render(scene, camera);
