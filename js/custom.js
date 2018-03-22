@@ -136,8 +136,11 @@ function init() {
 
     // equidistance sampled points
     var particles = new THREE.Points(geometrySpacedPoints, new THREE.PointsMaterial({
-      color: color,
-      size: 10
+      // color: color,
+      size: 20,
+      map: createCanvasMaterial('#'+'FF0000', 256),
+      transparent: true,
+      depthWrite: false
     }));
     particles.position.set(x, y, z + 125);
     particles.rotation.set(rx, ry, rz);
@@ -184,6 +187,26 @@ function init() {
   document.addEventListener('touchstart', onDocumentTouchStart, false);
   document.addEventListener('touchmove', onDocumentTouchMove, false);
   window.addEventListener('resize', onWindowResize, false);
+}
+
+//  CREATE CANVAS material
+function createCanvasMaterial(color, size) {
+  var matCanvas = document.createElement('canvas');
+  matCanvas.width = matCanvas.height = size;
+  var matContext = matCanvas.getContext('2d');
+  // create exture object from canvas.
+  var texture = new THREE.Texture(matCanvas);
+  // Draw a circle
+  var center = size / 2;
+  matContext.beginPath();
+  matContext.arc(center, center, size / 2, 0, 2 * Math.PI, false);
+  matContext.closePath();
+  matContext.fillStyle = color;
+  matContext.fill();
+  // need to set needsUpdate
+  texture.needsUpdate = true;
+  // return a texture made from the canvas
+  return texture;
 }
 
 
