@@ -6,6 +6,10 @@ var targetRotationOnMouseDown = 0;
 var mouseX = 0;
 var mouseXOnMouseDown = 0;
 var windowHalfX = window.innerWidth / 2;
+let pi = Math.PI
+let cos = Math.cos
+let sin = Math.sin
+
 init();
 animate();
 
@@ -48,21 +52,17 @@ function init() {
 
 
 
-  function addShape(shape, extrudeSettings, color, x, y, z, rx, ry, rz, s) {
+  function addShape(shape, color, x, y, z, rx, ry, rz, s, n) {
     // Add Line Shapes
-    addLineShape(shape, color, x, y, z, rx, ry, rz, s);
+    addLineShape(shape, color, x, y, z, rx, ry, rz, s, n);
   }
 
 
-  function addLineShape(shape, color, x, y, z, rx, ry, rz, s) {
+  function addLineShape(shape, color, x, y, z, rx, ry, rz, s, n) {
+    
     // lines
-    shape.autoClose = true;
-    var points = shape.getPoints();
-    var spacedPoints = shape.getSpacedPoints(splinepts.length);
-    var geometryPoints = new THREE.BufferGeometry().setFromPoints(points);
+    var spacedPoints = splinepts;
     var geometrySpacedPoints = new THREE.BufferGeometry().setFromPoints(spacedPoints);
-
-
 
     // line from equidistance sampled points
     var line = new THREE.Line(geometrySpacedPoints, new THREE.LineBasicMaterial({
@@ -94,25 +94,18 @@ function init() {
 
   // Object Shape
   var splinepts = [];
-  splinepts.push(new THREE.Vector2(0, 0));
-  splinepts.push(new THREE.Vector2(0, 100));
-  splinepts.push(new THREE.Vector2(150, 150))
-  splinepts.push(new THREE.Vector2(100, 100));
-  splinepts.push(new THREE.Vector2(100, 0));
+
+  let n = 12
+  for (let i=0; i <=n ; i++){
+    splinepts.push(new THREE.Vector2( 100 * cos(i/n * 2*pi), 100 * sin(i/n * 2*pi)));
+  }
+
   var splineShape = new THREE.Shape();
-  splineShape.moveTo(0, 0);
+  // splineShape.moveTo(0, 0);
   splineShape.splineThru(splinepts);
-  var extrudeSettings = {
-    amount: 8,
-    bevelEnabled: true,
-    bevelSegments: 2,
-    steps: 2,
-    bevelSize: 1,
-    bevelThickness: 1
-  };
 
 
-  addShape(splineShape, extrudeSettings, 0x515151, -50, 50, 0, 0, 0, 0, 1);
+  addShape(splineShape, 0x515151, -50, 50, 0, 0, 0, 0, 1, 1);
 
   //  RENDERER SETTINGS
   renderer = new THREE.WebGLRenderer({
