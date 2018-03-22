@@ -114,7 +114,7 @@ function init() {
     group.add(particles);
   }
 
-  
+
   // Spline shape
   var splinepts = [];
   splinepts.push(new THREE.Vector2(70, 20));
@@ -132,26 +132,15 @@ function init() {
     bevelSize: 1,
     bevelThickness: 1
   };
-  // addShape( shape, color, x, y, z, rx, ry,rz, s );
-  // addShape(californiaShape, extrudeSettings, 0xf08000, -300, -100, 0, 0, 0, 0, 1);
-  // addShape(triangleShape, extrudeSettings, 0x8080f0, -180, 0, 0, 0, 0, 0, 1);
-  // addShape(roundedRectShape, extrudeSettings, 0x008000, -150, 150, 0, 0, 0, 0, 1);
-  // addShape(trackShape, extrudeSettings, 0x008080, 200, -100, 0, 0, 0, 0, 1);
-  // addShape(squareShape, extrudeSettings, 0x0040f0, 150, 100, 0, 0, 0, 0, 1);
-  // addShape(heartShape, extrudeSettings, 0xf00000, 60, 100, 0, 0, 0, Math.PI, 1);
-  // addShape(circleShape, extrudeSettings, 0x00f000, 120, 250, 0, 0, 0, 0, 1);
-  // addShape(fishShape, extrudeSettings, 0x404040, -60, 200, 0, 0, 0, 0, 1);
-  // addShape(smileyShape, extrudeSettings, 0xf000f0, -200, 250, 0, 0, 0, Math.PI, 1);
-  // addShape(arcShape, extrudeSettings, 0x804000, 150, 0, 0, 0, 0, 0, 1);
+
+
   addShape(splineShape, extrudeSettings, 0x808080, -50, -100, 0, 0, 0, 0, 1);
-  // addLineShape(arcShape.holes[0], 0x804000, 150, 0, 0, 0, 0, 0, 1);
-  // for (var i = 0; i < smileyShape.holes.length; i += 1) {
-  //   addLineShape(smileyShape.holes[i], 0xf000f0, -200, 250, 0, 0, 0, Math.PI, 1);
-  // }
-  //
+
+
   renderer = new THREE.WebGLRenderer({
     antialias: true
   });
+
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
