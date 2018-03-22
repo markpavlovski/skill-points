@@ -41,7 +41,10 @@ function init() {
   var light = new THREE.PointLight(0xffffff, 0.8);
   camera.add(light);
 
+
+  // set up group
   group = new THREE.Group();
+  group.position.y = 100
   scene.add(group);
 
   // Load Textures
@@ -59,7 +62,7 @@ function init() {
 
 
   function addLineShape(shape, color, x, y, z, rx, ry, rz, s, n) {
-    
+
     // lines
     var spacedPoints = splinepts;
     var geometrySpacedPoints = new THREE.BufferGeometry().setFromPoints(spacedPoints);
@@ -96,8 +99,8 @@ function init() {
   var splinepts = [];
 
   let n = 12
-  for (let i=0; i <=n ; i++){
-    splinepts.push(new THREE.Vector2( 100 * cos(i/n * 2*pi), 100 * sin(i/n * 2*pi)));
+  for (let i = 0; i <= n; i++) {
+    splinepts.push(new THREE.Vector2(100 * cos(i / n * 2 * pi), 100 * sin(i / n * 2 * pi)));
   }
 
   var splineShape = new THREE.Shape();
