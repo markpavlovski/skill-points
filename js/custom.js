@@ -107,6 +107,11 @@ function createCanvasMaterial(color, size) {
 function createShape(n) {
   // Object Shape
   while (splinepts[0]) splinepts.pop()
+  while (objects[0]) objects.pop()
+  while (group.children[0]){
+    group.remove(group.children[0])
+  }
+
   for (let i = 0; i <= n; i++) {
     splinepts.push(new THREE.Vector2(100 * cos(i / n * 2 * pi), 100 * sin(i / n * 2 * pi)));
     if (i < n) {
@@ -173,9 +178,8 @@ window.addEventListener("mousedown", (event) => {
 
   for (var i = 0; i < intersects.length; i++) {
     intersects[0].object.material.color.set(0x00ff00);
-    while (group.children[0]){
-      group.remove(group.children[0])
-    }
+    console.log(intersects[0].object.name)
+
     createShape(Math.floor(Math.random()*20)+3)
   }
 })
@@ -191,9 +195,6 @@ function animate() {
 }
 
 function render() {
-
   group.rotation.y += (targetRotation - group.rotation.y) * 0.05;
-
-
   renderer.render(scene, camera);
 }
