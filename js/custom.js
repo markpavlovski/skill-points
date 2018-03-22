@@ -79,8 +79,8 @@ function init() {
     // equidistance sampled points
     var particles = new THREE.Points(geometrySpacedPoints, new THREE.PointsMaterial({
       // color: color,
-      size: 20,
-      map: createCanvasMaterial('#' + '000000', 256),
+      size: 15,
+      map: createCanvasMaterial('#' + '515151', 256),
       transparent: true,
       depthWrite: false
     }));
@@ -112,7 +112,7 @@ function init() {
   };
 
 
-  addShape(splineShape, extrudeSettings, 0x808080, -50, 50, 0, 0, 0, 0, 1);
+  addShape(splineShape, extrudeSettings, 0x515151, -50, 50, 0, 0, 0, 0, 1);
 
   //  RENDERER SETTINGS
   renderer = new THREE.WebGLRenderer({
