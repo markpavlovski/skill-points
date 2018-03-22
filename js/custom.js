@@ -75,7 +75,7 @@ function init() {
     // lines
     shape.autoClose = true;
     var points = shape.getPoints();
-    var spacedPoints = shape.getSpacedPoints(50);
+    var spacedPoints = shape.getSpacedPoints(splinepts.length);
     var geometryPoints = new THREE.BufferGeometry().setFromPoints(points);
     var geometrySpacedPoints = new THREE.BufferGeometry().setFromPoints(spacedPoints);
     // solid line
@@ -119,9 +119,10 @@ function init() {
 
   // Spline shape
   var splinepts = [];
-  splinepts.push(new THREE.Vector2(70, 20));
-  splinepts.push(new THREE.Vector2(80, 90));
-  splinepts.push(new THREE.Vector2(-30, 70));
+  splinepts.push(new THREE.Vector2(0, 0));
+  splinepts.push(new THREE.Vector2(0, 100));
+  splinepts.push(new THREE.Vector2(150, 150));
+  splinepts.push(new THREE.Vector2(100, 0));
   splinepts.push(new THREE.Vector2(0, 0));
   var splineShape = new THREE.Shape();
   splineShape.moveTo(0, 0);
@@ -136,8 +137,7 @@ function init() {
   };
 
 
-  addShape(splineShape, extrudeSettings, 0x808080, -50, -100, 0, 0, 0, 0, 1);
-
+  addShape(splineShape, extrudeSettings, 0x808080, -50, 50, 0, 0, 0, 0, 1);
 
   //  RENDERER SETTINGS
   renderer = new THREE.WebGLRenderer({
