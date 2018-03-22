@@ -168,27 +168,9 @@ function createCanvasMaterial(color, size) {
 // Interactions with spheres
 
 window.addEventListener("mousedown", (event) => {
-  console.log(event)
-  // let projector = new THREE.Projector()
-
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  //
-  // mouseClickVector.unproject(camera)
-  // let raycaster = new THREE.Raycaster(
-  //   camera.position,
-  //   mouseClickVector.sub(camera.position).normalize()
-  // )
-  // let intersects = raycaster.intersectObjects(objects)
-  // console.log(intersects)
-  // console.log(objects)
-  // if (intersects.length > 0) {
-  //   intersects[0].object.material.color.setHex(Math.random() * 0xffffff)
-  // }
-  //
-
-
-}, false)
+})
 
 
 // ANIMATE & RENDER
@@ -209,7 +191,7 @@ function render() {
   var intersects = raycaster.intersectObjects(objects);
 
   for (var i = 0; i < intersects.length; i++) {
-    intersects[i].object.material.color.set(0x00ff00);
+    intersects[0].object.material.color.set(0x00ff00);
   }
 
   renderer.render(scene, camera);
