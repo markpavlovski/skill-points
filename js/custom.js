@@ -91,8 +91,6 @@ function init() {
     particles.position.set(x, y, z + 25);
     particles.rotation.set(rx, ry, rz);
     particles.scale.set(s, s, s);
-    objects.push(particles)
-    console.log(scene.children)
     group.add(particles);
 
   }
@@ -104,6 +102,18 @@ function init() {
   let n = 12
   for (let i = 0; i <= n; i++) {
     splinepts.push(new THREE.Vector2(100 * cos(i / n * 2 * pi), 100 * sin(i / n * 2 * pi)));
+    if (i < n) {
+      var sphere = new THREE.Mesh(new THREE.SphereGeometry(10, 5, 5), new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        wireframe: true
+      }));
+      sphere.position.x = 100 * cos(i / n * 2 * pi)
+      sphere.position.y = 100 * sin(i / n * 2 * pi)
+      sphere.position.z = 25
+      sphere.name = `sphere${i}`
+      group.add(sphere);
+      objects.push(sphere)
+    }
   }
 
   var splineShape = new THREE.Shape();
@@ -111,7 +121,7 @@ function init() {
   splineShape.splineThru(splinepts);
 
 
-  addShape(splineShape, 0x515151, -50, 50, 0, 0, 0, 0, 1, 1);
+  addShape(splineShape, 0x515151, 0, 0, 0, 0, 0, 0, 1, 1);
 
   //  RENDERER SETTINGS
   renderer = new THREE.WebGLRenderer({
@@ -155,12 +165,12 @@ function createCanvasMaterial(color, size) {
 // Interactions with spheres
 
 
-window.addEventListener("mousedown",()=>{
+window.addEventListener("mousedown", () => {
 
   let projector = new THREE.Projector()
   let mouseClickVector = new THREE.Vector3(
     (event.clientX / window.innerWidth) * 2 - 1,
-    (event.clientY / window.innerHeight) *2 + 1,
+    (event.clientY / window.innerHeight) * 2 + 1,
     0.5
   )
   mouseClickVector.unproject(camera)
@@ -170,8 +180,9 @@ window.addEventListener("mousedown",()=>{
   )
   let intersects = raycaster.intersectObjects(objects)
   console.log(intersects)
-  if (intersects.length > 0){
-    intersects[0].object.material.color.setHex(Math.random()* 0xffffff)
+  console.log(objects)
+  if (intersects.length > 0) {
+    intersects[0].object.material.color.setHex(Math.random() * 0xffffff)
   }
 
 
