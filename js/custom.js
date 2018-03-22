@@ -10,6 +10,9 @@ let pi = Math.PI
 let cos = Math.cos
 let sin = Math.sin
 let objects = []
+let raycaster = new THREE.Raycaster();
+let mouse = new THREE.Vector2();
+
 
 init();
 animate();
@@ -164,27 +167,25 @@ function createCanvasMaterial(color, size) {
 
 // Interactions with spheres
 
+window.addEventListener("mousedown", (event) => {
+  console.log(event)
+  // let projector = new THREE.Projector()
 
-window.addEventListener("mousedown", () => {
-
-  let projector = new THREE.Projector()
-  let mouseClickVector = new THREE.Vector3(
-    (event.clientX / window.innerWidth) * 2 - 1,
-    (event.clientY / window.innerHeight) * 2 + 1,
-    0.5
-  )
-  mouseClickVector.unproject(camera)
-  let raycaster = new THREE.Raycaster(
-    camera.position,
-    mouseClickVector.sub(camera.position).normalize()
-  )
-  let intersects = raycaster.intersectObjects(objects)
-  console.log(intersects)
-  console.log(objects)
-  if (intersects.length > 0) {
-    intersects[0].object.material.color.setHex(Math.random() * 0xffffff)
-  }
-
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  //
+  // mouseClickVector.unproject(camera)
+  // let raycaster = new THREE.Raycaster(
+  //   camera.position,
+  //   mouseClickVector.sub(camera.position).normalize()
+  // )
+  // let intersects = raycaster.intersectObjects(objects)
+  // console.log(intersects)
+  // console.log(objects)
+  // if (intersects.length > 0) {
+  //   intersects[0].object.material.color.setHex(Math.random() * 0xffffff)
+  // }
+  //
 
 
 }, false)
@@ -200,6 +201,16 @@ function animate() {
 }
 
 function render() {
+
   group.rotation.y += (targetRotation - group.rotation.y) * 0.05;
+  raycaster.setFromCamera( mouse, camera );
+
+  // calculate objects intersecting the picking ray
+  var intersects = raycaster.intersectObjects(objects);
+
+  for (var i = 0; i < intersects.length; i++) {
+    intersects[i].object.material.color.set(0x00ff00);
+  }
+
   renderer.render(scene, camera);
 }
