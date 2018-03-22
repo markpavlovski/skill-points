@@ -165,6 +165,19 @@ function createShape(n) {
 window.addEventListener("mousedown", (event) => {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  // calculate objects intersecting the picking ray
+  var intersects = raycaster.intersectObjects(objects);
+
+  for (var i = 0; i < intersects.length; i++) {
+    intersects[0].object.material.color.set(0x00ff00);
+    while (group.children[0]){
+      group.remove(group.children[0])
+    }
+    createShape(Math.floor(Math.random()*20)+3)
+  }
 })
 
 
@@ -180,18 +193,7 @@ function animate() {
 function render() {
 
   group.rotation.y += (targetRotation - group.rotation.y) * 0.05;
-  raycaster.setFromCamera(mouse, camera);
 
-  // calculate objects intersecting the picking ray
-  var intersects = raycaster.intersectObjects(objects);
-
-  for (var i = 0; i < intersects.length; i++) {
-    intersects[0].object.material.color.set(0x00ff00);
-    while (group.children[0]){
-      group.remove(group.children[0])
-    }
-    createShape(10)
-  }
 
   renderer.render(scene, camera);
 }
