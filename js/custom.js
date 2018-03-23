@@ -20,7 +20,7 @@ let initialPts = 20
 let pts = initialPts
 let r = []
 let rSphere = []
-let rFactor = 1.005
+let rFactor = 1.008
 for (let i = 0; i <= n; i++) r.push(100)
 for (let i = 0; i < n; i++) rSphere.push(25)
 let z
@@ -31,13 +31,13 @@ var target = 0.5
 var tween = new TWEEN.Tween(position).to(target, 1000);
 
 
-
-tween.onUpdate(function(){
-    // tweenSphere.position.x = position.x;
-    // tweenSphere.position.y = position.y;
-    // r[1] = position
-    createShape(n,"1")
-});
+//
+// tween.onUpdate(function(){
+//     // tweenSphere.position.x = position.x;
+//     // tweenSphere.position.y = position.y;
+//     // r[1] = position
+//     createShape(n,"1")
+// });
 
 
 
@@ -86,7 +86,7 @@ function init() {
   texture.repeat.set(0.008, 0.008); // it's necessary to apply these settings in order to correctly display the texture on a shape geometry
 
   //
-  // createShape(n)
+  createShape(n)
 
 
 
@@ -226,7 +226,15 @@ window.addEventListener("mousedown", (event) => {
     pts--
     info.innerHTML = `<br/>Click on a point to increase that stat. Click-drag to spin.<br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
     for (var i = 0; i < intersects.length; i++) {
-      createShape(n, intersects[0].object.name)
+
+      tween.onUpdate(function(){
+          // tweenSphere.position.x = position.x;
+          // tweenSphere.position.y = position.y;
+          // r[1] = position
+          console.log(intersects[0].object.name)
+          createShape(n, intersects[0].object.name)
+      });
+
     }
   }
 })
