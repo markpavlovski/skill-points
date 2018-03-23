@@ -6,6 +6,7 @@ var targetRotationOnMouseDown = 0;
 var mouseX = 0;
 var mouseXOnMouseDown = 0;
 var windowHalfX = window.innerWidth / 2;
+var info = document.createElement('div');
 let pi = Math.PI
 let cos = Math.cos
 let sin = Math.sin
@@ -14,10 +15,13 @@ let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 let splineShape = new THREE.Shape();
 let splinepts = [];
-let n = 7;
+let n = 7
+let initialPts = 10
+let pts = initialPts
 let r = []
-for (let i=0; i<=n; i++) r.push(100)
+for (let i = 0; i <= n; i++) r.push(100)
 console.log(r)
+let z
 
 
 init();
@@ -31,12 +35,11 @@ function init() {
 
 
   // Set up info text
-  var info = document.createElement('div');
   info.style.position = 'absolute';
   info.style.top = '10px';
   info.style.width = '100%';
   info.style.textAlign = 'center';
-  info.innerHTML = 'Simple procedurally-generated shapes<br/>Drag to spin';
+  info.innerHTML = `<br/><br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
   container.appendChild(info);
 
 
@@ -111,14 +114,14 @@ function createShape(n, trigger) {
   // Object Shape
   while (splinepts[0]) splinepts.pop()
   while (objects[0]) objects.pop()
-  while (group.children[0]){
+  while (group.children[0]) {
     group.remove(group.children[0])
   }
 
   for (let i = 0; i <= n; i++) {
     console.log(r[i])
     let radius = 100
-    if(i % n == trigger){
+    if (i % n == trigger) {
       console.log(r[i])
       r[i] = 1.1 * r[i]
       console.log(r[i])
@@ -131,8 +134,8 @@ function createShape(n, trigger) {
         wireframe: true,
         visible: true
       }));
-      sphere.position.x = radius * cos(i / n * 2 * pi)
-      sphere.position.y = radius * sin(i / n * 2 * pi)
+      sphere.position.x = r[i] * cos(i / n * 2 * pi)
+      sphere.position.y = r[i] * sin(i / n * 2 * pi)
       sphere.position.z = 25
       sphere.name = `${i}`
       group.add(sphere);
@@ -144,42 +147,57 @@ function createShape(n, trigger) {
 }
 
 
-  function addLineShape(shape, color, x, y, z, rx, ry, rz, s, n) {
+function addLineShape(shape, color, x, y, z, rx, ry, rz, s, n) {
 
-    // lines
-    var spacedPoints = splinepts;
-    var geometrySpacedPoints = new THREE.BufferGeometry().setFromPoints(spacedPoints);
+  // lines
+  var spacedPoints = splinepts;
+  var geometrySpacedPoints = new THREE.BufferGeometry().setFromPoints(spacedPoints);
 
-    // line from equidistance sampled points
-    var line = new THREE.Line(geometrySpacedPoints, new THREE.LineBasicMaterial({
-      color: color,
-      linewidth: 3
-    }));
-    line.position.set(x, y, z + 25);
-    line.rotation.set(rx, ry, rz);
-    line.scale.set(s, s, s);
-    group.add(line);
+  // line from equidistance sampled points
+  var line = new THREE.Line(geometrySpacedPoints, new THREE.LineBasicMaterial({
+    color: color,
+    linewidth: 3
+  }));
+  line.position.set(x, y, z + 25);
+  line.rotation.set(rx, ry, rz);
+  line.scale.set(s, s, s);
+  group.add(line);
 
 
-    // particles
-    var particles = new THREE.Points(geometrySpacedPoints, new THREE.PointsMaterial({
-      // color: color,
-      size: 15,
-      map: createCanvasMaterial('#' + '515151', 256),
-      transparent: true,
-      depthWrite: false
-    }));
-    particles.position.set(x, y, z + 25);
-    particles.rotation.set(rx, ry, rz);
-    particles.scale.set(s, s, s);
-    group.add(particles);
+  // particles
+  var particles = new THREE.Points(geometrySpacedPoints, new THREE.PointsMaterial({
+    // color: color,
+    size: 15,
+    map: createCanvasMaterial('#' + '515151', 256),
+    transparent: true,
+    depthWrite: false
+  }));
+  particles.position.set(x, y, z + 25);
+  particles.rotation.set(rx, ry, rz);
+  particles.scale.set(s, s, s);
+  group.add(particles);
 
-  }
+}
 
 
 // Interactions with spheres
 
 window.addEventListener("mousedown", (event) => {
+
+  console.log(event.target)
+  z = event.target
+  if (z.classList.contains("reset")) {
+    console.log("heuuo")
+    for(let i=0; i<r.length; i++){
+      r[i] = 100
+    }
+    pts = initialPts
+    createShape(n,Infinity)
+  }
+
+
+
+
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
@@ -187,10 +205,14 @@ window.addEventListener("mousedown", (event) => {
 
   // calculate objects intersecting the picking ray
   var intersects = raycaster.intersectObjects(objects);
-
-  for (var i = 0; i < intersects.length; i++) {
-    console.log(intersects[0].object.name)
-    createShape(n, intersects[0].object.name)
+  if (pts > 0 & intersects.length > 0) {
+    console.log(intersects)
+    pts--
+    info.innerHTML = `<br/><br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
+    for (var i = 0; i < intersects.length; i++) {
+      console.log(intersects[0].object.name)
+      createShape(n, intersects[0].object.name)
+    }
   }
 })
 
