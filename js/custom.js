@@ -15,7 +15,9 @@ let mouse = new THREE.Vector2();
 let splineShape = new THREE.Shape();
 let splinepts = [];
 let n = 7;
-
+let r = []
+for (let i=0; i<=n; i++) r.push(100)
+console.log(r)
 
 
 init();
@@ -114,11 +116,15 @@ function createShape(n, trigger) {
   }
 
   for (let i = 0; i <= n; i++) {
+    console.log(r[i])
     let radius = 100
     if(i % n == trigger){
-      radius = 120
+      console.log(r[i])
+      r[i] = 1.1 * r[i]
+      console.log(r[i])
     }
-    splinepts.push(new THREE.Vector2(radius * cos(i / n * 2 * pi), radius * sin(i / n * 2 * pi)));
+
+    splinepts.push(new THREE.Vector2(r[i] * cos(i / n * 2 * pi), r[i] * sin(i / n * 2 * pi)));
     if (i < n) {
       var sphere = new THREE.Mesh(new THREE.SphereGeometry(20, 5, 5), new THREE.MeshBasicMaterial({
         color: 0xff0000,
