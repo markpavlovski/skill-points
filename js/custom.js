@@ -31,7 +31,7 @@ let z
 let targetPoint
 let tween = null
 let increaseRate = 1.1
-let delay = 100
+let delay = 300
 let circleMesh
 let transitionEnded = true
 
@@ -108,6 +108,24 @@ function init() {
   circleMesh.position.z = 25
 
   createShape(n)
+
+
+
+  let sprite = new THREE.TextSprite({
+    textSize: 18,
+    texture: {
+        text: 'WISDOM',
+        fontFamily: 'Arial, Helvetica, sans-serif',
+    },
+    material: {color: 0x515151},
+});
+sprite.position.x = 150
+sprite.position.y = 150
+group.add(sprite);
+
+
+
+
 
 
 
