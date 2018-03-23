@@ -20,21 +20,27 @@ let initialPts = 20
 let pts = initialPts
 let r = []
 let rSphere = []
-let rFactor = 1.008
+// let rFactor = 1.008
 for (let i = 0; i <= n; i++) r.push(100)
 for (let i = 0; i < n; i++) rSphere.push(25)
 let z
+let targetPoint
+let tween = null
+let increaseRate = 1.1
+let delay = 300
 
 
-var position =  0.1
-var target = 0.5
-var tween = new TWEEN.Tween(position).to(target, 1000);
+let position = {
+  x: 1.00
+}
+let target = {
+  x: increaseRate
+}
 
 
 //
 // tween.onUpdate(function(){
-//     // tweenSphere.position.x = position.x;
-//     // tweenSphere.position.y = position.y;
+//     // tweenSphere.position.x = position
 //     // r[1] = position
 //     createShape(n,"1")
 // });
@@ -46,7 +52,6 @@ animate();
 
 function init() {
 
-  tween.start();
 
   // Set Up Container
   container = document.createElement('div');
@@ -129,8 +134,13 @@ function createCanvasMaterial(color, size) {
 }
 
 
-function createShape(n, trigger) {
+function createShape(n, trigger, rFactor) {
+  let _r = r.map(item => item)
+  let _rSphere = rSphere.map(item => item)
+
+
   // Object Shape
+  console.log(trigger)
   while (splinepts[0]) splinepts.pop()
   while (objects[0]) objects.pop()
   while (group.children[0]) {
@@ -140,27 +150,31 @@ function createShape(n, trigger) {
   for (let i = 0; i <= n; i++) {
     let radius = 100
     if (i % n == trigger) {
-      r[i] = Math.pow(rFactor,1) * r[i]
+      _r[i] = Math.pow(rFactor, 1) * r[i]
+      if (rFactor === increaseRate) r[i] = rFactor * r[i]
     }
     if (i % n == trigger & i < n) {
-      rSphere[i] = Math.pow(rFactor,2) * rSphere[i]
+      _rSphere[i] = Math.pow(rFactor, 2) * rSphere[i]
+      if (rFactor === increaseRate) rSphere[i] = Math.pow(rFactor, 2) * rSphere[i]
+
     }
 
-    splinepts.push(new THREE.Vector2(r[i] * cos(i / n * 2 * pi), r[i] * sin(i / n * 2 * pi)));
+    splinepts.push(new THREE.Vector2(_r[i] * cos(i / n * 2 * pi), _r[i] * sin(i / n * 2 * pi)));
     if (i < n) {
-      var sphere = new THREE.Mesh(new THREE.SphereGeometry(rSphere[i], 5, 5), new THREE.MeshBasicMaterial({
+      var sphere = new THREE.Mesh(new THREE.SphereGeometry(_rSphere[i], 5, 5), new THREE.MeshBasicMaterial({
         color: 0xff0000,
         wireframe: true,
         visible: true
       }));
-      sphere.position.x = r[i] * cos(i / n * 2 * pi)
-      sphere.position.y = r[i] * sin(i / n * 2 * pi)
+      sphere.position.x = _r[i] * cos(i / n * 2 * pi)
+      sphere.position.y = _r[i] * sin(i / n * 2 * pi)
       sphere.position.z = 25
       sphere.name = `${i}`
       group.add(sphere);
       objects.push(sphere)
     }
   }
+  console.log("rFactor:", rFactor)
   splineShape.splineThru(splinepts);
   addLineShape(splineShape, 0x515151, 0, 0, 0, 0, 0, 0, 1, 1);
 }
@@ -205,11 +219,12 @@ window.addEventListener("mousedown", (event) => {
 
   z = event.target
   if (z.classList.contains("reset")) {
-    for(let i=0; i<r.length; i++){
+    for (let i = 0; i < r.length; i++) {
       r[i] = 100
     }
     pts = initialPts
-    createShape(n,Infinity)
+    createShape(n, Infinity, 1)
+    console.log("reset")
   }
 
 
@@ -227,12 +242,15 @@ window.addEventListener("mousedown", (event) => {
     info.innerHTML = `<br/>Click on a point to increase that stat. Click-drag to spin.<br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
     for (var i = 0; i < intersects.length; i++) {
 
-      tween.onUpdate(function(){
-          // tweenSphere.position.x = position.x;
-          // tweenSphere.position.y = position.y;
-          // r[1] = position
-          console.log(intersects[0].object.name)
-          createShape(n, intersects[0].object.name)
+      TWEEN.removeAll();
+      position.x = 1
+      target.x = increaseRate
+      tween = new TWEEN.Tween(position).to(target, delay);
+      tween.start()
+      tween.onUpdate(function() {
+        rFactor = position.x
+        targetPoint = intersects[0].object.name
+        createShape(n, targetPoint, rFactor)
       });
 
     }
@@ -250,7 +268,9 @@ function animate() {
 }
 
 function render() {
-  TWEEN.update();
+  if (tween) {
+    TWEEN.update()
+  }
   group.rotation.y += (targetRotation - group.rotation.y) * 0.05;
   renderer.render(scene, camera);
 }
