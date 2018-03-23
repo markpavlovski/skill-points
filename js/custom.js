@@ -23,11 +23,32 @@ let rFactor = 1.05
 for (let i = 0; i <= n; i++) r.push(100)
 let z
 
+var position = { x : 0, y: 300 };
+var target = { x : 400, y: 50 };
+var tween = new TWEEN.Tween(position).to(target, 2000);
+
+
+var tweenSphere = new THREE.Mesh(new THREE.SphereGeometry(25, 5, 5), new THREE.MeshBasicMaterial({
+  color: 0xff0000,
+  wireframe: true,
+  visible: true
+}));
+
+
+
+tween.onUpdate(function(){
+    tweenSphere.position.x = position.x;
+    tweenSphere.position.y = position.y;
+});
+
+
 
 init();
 animate();
 
 function init() {
+
+  tween.start();
 
   // Set Up Container
   container = document.createElement('div');
@@ -46,6 +67,7 @@ function init() {
   // Set up scene
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
+  scene.add(tweenSphere)
 
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
   camera.position.set(0, 150, 500);
@@ -220,6 +242,7 @@ function animate() {
 }
 
 function render() {
+  TWEEN.update();
   group.rotation.y += (targetRotation - group.rotation.y) * 0.05;
   renderer.render(scene, camera);
 }
