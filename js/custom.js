@@ -15,32 +15,27 @@ let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 let splineShape = new THREE.Shape();
 let splinepts = [];
-let n = 9
+let n = 7
 let initialPts = 20
 let pts = initialPts
 let r = []
-let rFactor = 1.05
+let rSphere = []
+let rFactor = 1.005
 for (let i = 0; i <= n; i++) r.push(100)
+for (let i = 0; i < n; i++) rSphere.push(25)
 let z
 
 
-var position =  100
-var target = 150
-var tween = new TWEEN.Tween(position).to(target, 2000);
-
-
-var tweenSphere = new THREE.Mesh(new THREE.SphereGeometry(25, 5, 5), new THREE.MeshBasicMaterial({
-  color: 0xff0000,
-  wireframe: true,
-  visible: true
-}));
+var position =  0.1
+var target = 0.5
+var tween = new TWEEN.Tween(position).to(target, 1000);
 
 
 
 tween.onUpdate(function(){
-    tweenSphere.position.x = position.x;
-    tweenSphere.position.y = position.y;
-    r[1] = position
+    // tweenSphere.position.x = position.x;
+    // tweenSphere.position.y = position.y;
+    // r[1] = position
     createShape(n,"1")
 });
 
@@ -70,7 +65,6 @@ function init() {
   // Set up scene
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
-  scene.add(tweenSphere)
 
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
   camera.position.set(0, 150, 500);
@@ -91,8 +85,8 @@ function init() {
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping; // it's necessary to apply these settings in order to correctly display the texture on a shape geometry
   texture.repeat.set(0.008, 0.008); // it's necessary to apply these settings in order to correctly display the texture on a shape geometry
 
-
-  createShape(n)
+  //
+  // createShape(n)
 
 
 
@@ -146,15 +140,18 @@ function createShape(n, trigger) {
   for (let i = 0; i <= n; i++) {
     let radius = 100
     if (i % n == trigger) {
-      r[i] = rFactor * r[i]
+      r[i] = Math.pow(rFactor,1) * r[i]
+    }
+    if (i % n == trigger & i < n) {
+      rSphere[i] = Math.pow(rFactor,2) * rSphere[i]
     }
 
     splinepts.push(new THREE.Vector2(r[i] * cos(i / n * 2 * pi), r[i] * sin(i / n * 2 * pi)));
     if (i < n) {
-      var sphere = new THREE.Mesh(new THREE.SphereGeometry(25, 5, 5), new THREE.MeshBasicMaterial({
+      var sphere = new THREE.Mesh(new THREE.SphereGeometry(rSphere[i], 5, 5), new THREE.MeshBasicMaterial({
         color: 0xff0000,
         wireframe: true,
-        visible: false
+        visible: true
       }));
       sphere.position.x = r[i] * cos(i / n * 2 * pi)
       sphere.position.y = r[i] * sin(i / n * 2 * pi)
