@@ -14,6 +14,7 @@ let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 let splineShape = new THREE.Shape();
 let splinepts = [];
+let n = 7;
 
 
 
@@ -61,7 +62,7 @@ function init() {
   texture.repeat.set(0.008, 0.008); // it's necessary to apply these settings in order to correctly display the texture on a shape geometry
 
 
-  createShape(3)
+  createShape(n)
 
 
 
@@ -104,7 +105,7 @@ function createCanvasMaterial(color, size) {
 }
 
 
-function createShape(n) {
+function createShape(n, trigger) {
   // Object Shape
   while (splinepts[0]) splinepts.pop()
   while (objects[0]) objects.pop()
@@ -113,16 +114,21 @@ function createShape(n) {
   }
 
   for (let i = 0; i <= n; i++) {
-    splinepts.push(new THREE.Vector2(100 * cos(i / n * 2 * pi), 100 * sin(i / n * 2 * pi)));
+    let radius = 100
+    if(i % n == trigger){
+      radius = 120
+    }
+    splinepts.push(new THREE.Vector2(radius * cos(i / n * 2 * pi), radius * sin(i / n * 2 * pi)));
     if (i < n) {
-      var sphere = new THREE.Mesh(new THREE.SphereGeometry(10, 5, 5), new THREE.MeshBasicMaterial({
+      var sphere = new THREE.Mesh(new THREE.SphereGeometry(20, 5, 5), new THREE.MeshBasicMaterial({
         color: 0xff0000,
-        wireframe: true
+        wireframe: true,
+        visible: true
       }));
-      sphere.position.x = 100 * cos(i / n * 2 * pi)
-      sphere.position.y = 100 * sin(i / n * 2 * pi)
+      sphere.position.x = radius * cos(i / n * 2 * pi)
+      sphere.position.y = radius * sin(i / n * 2 * pi)
       sphere.position.z = 25
-      sphere.name = `sphere${i}`
+      sphere.name = `${i}`
       group.add(sphere);
       objects.push(sphere)
     }
@@ -177,10 +183,8 @@ window.addEventListener("mousedown", (event) => {
   var intersects = raycaster.intersectObjects(objects);
 
   for (var i = 0; i < intersects.length; i++) {
-    intersects[0].object.material.color.set(0x00ff00);
     console.log(intersects[0].object.name)
-
-    createShape(Math.floor(Math.random()*20)+3)
+    createShape(n, intersects[0].object.name)
   }
 })
 
