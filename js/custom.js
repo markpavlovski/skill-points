@@ -20,6 +20,7 @@ let initialPts = 20
 let pts = initialPts
 let r = []
 let rSphere = []
+let rSmall = 4
 // let rFactor = 1.008
 for (let i = 0; i <= n; i++) r.push(100)
 for (let i = 0; i < n; i++) rSphere.push(25)
@@ -98,22 +99,12 @@ function init() {
     side: THREE.DoubleSide,
     map: texture,
     wireframe: false,
-    opacity: 0.05,
-    // premultipliedAlpha: true,
+    opacity: 0.5,
+    premultipliedAlpha: true,
     transparent: true
   }));
   circleMesh.position.z = 25
-  // scene.add(circleMesh)
-  //
-  //
-  //   var geometry = new THREE.CircleGeometry( 50, 32 );
-  //   var material = new THREE.MeshPhongMaterial( {
-  //       side: THREE.DoubleSide,
-  //       map: texture
-  // } );
-  //   var circle = new THREE.Mesh(geometry, material);
-  //   group.add( circle );
-  //
+
   createShape(n)
 
 
@@ -187,7 +178,7 @@ function createShape(n, trigger, rFactor) {
       var sphere = new THREE.Mesh(new THREE.SphereGeometry(_rSphere[i], 5, 5), new THREE.MeshBasicMaterial({
         color: 0xff0000,
         wireframe: true,
-        visible: true
+        visible: false
       }));
       sphere.position.x = _r[i] * cos(i / n * 2 * pi)
       sphere.position.y = _r[i] * sin(i / n * 2 * pi)
@@ -195,6 +186,19 @@ function createShape(n, trigger, rFactor) {
       sphere.name = `${i}`
       group.add(sphere);
       objects.push(sphere)
+    }
+    if (i < n) {
+      var smallSphere = new THREE.Mesh(new THREE.SphereGeometry(rSmall, 30, 30), new THREE.MeshLambertMaterial({
+        color: 0x515151,
+        wireframe: false,
+        visible: true
+      }));
+      smallSphere.position.x = _r[i] * cos(i / n * 2 * pi)
+      smallSphere.position.y = _r[i] * sin(i / n * 2 * pi)
+      smallSphere.position.z = 25
+      smallSphere.name = `${i}`
+      group.add(smallSphere);
+      objects.push(smallSphere)
     }
   }
   console.log("rFactor:", rFactor)
@@ -219,19 +223,6 @@ function addLineShape(shape, color, x, y, z, rx, ry, rz, s, n) {
   line.scale.set(s, s, s);
   group.add(line);
 
-
-  // particles
-  var particles = new THREE.Points(geometrySpacedPoints, new THREE.PointsMaterial({
-    // color: color,
-    size: 15,
-    map: createCanvasMaterial('#' + '515151', 256),
-    transparent: true,
-    depthWrite: false
-  }));
-  particles.position.set(x, y, z + 25);
-  particles.rotation.set(rx, ry, rz);
-  particles.scale.set(s, s, s);
-  group.add(particles);
 
 }
 
