@@ -15,7 +15,7 @@ let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 let splineShape = new THREE.Shape();
 let splinepts = [];
-let n = 7
+let n = 6
 let initialPts = 20
 let pts = initialPts
 let r = []
@@ -31,9 +31,11 @@ let z
 let targetPoint
 let tween = null
 let increaseRate = 1.1
-let delay = 300
+let delay = 100
 let circleMesh
 let transitionEnded = true
+let skills = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]
+let skillPoints = [5, 5, 5, 5, 5, 5]
 
 
 let position = {
@@ -111,20 +113,6 @@ function init() {
 
 
 
-  let sprite = new THREE.TextSprite({
-    textSize: 18,
-    texture: {
-        text: 'WISDOM',
-        fontFamily: 'Arial, Helvetica, sans-serif',
-    },
-    material: {color: 0x515151},
-});
-sprite.position.x = 150
-sprite.position.y = 150
-group.add(sprite);
-
-
-
 
 
 
@@ -171,7 +159,7 @@ function createCanvasMaterial(color, size) {
 function createShape(n, trigger, rFactor) {
   let _r = r.map(item => item)
   let _rSphere = rSphere.map(item => item)
-  if (trigger )transitionEnded = false
+  if (trigger) transitionEnded = false
 
   // Object Shape
   console.log(trigger)
@@ -180,13 +168,16 @@ function createShape(n, trigger, rFactor) {
   while (group.children[0]) {
     group.remove(group.children[0])
   }
-  group.add(circleMesh)
+  // group.add(circleMesh)
 
   for (let i = 0; i <= n; i++) {
     let radius = 100
     if (i % n == trigger) {
       _r[i] = Math.pow(rFactor, 1) * r[i]
-      if (rFactor === increaseRate) r[i] = rFactor * r[i]
+      if (rFactor === increaseRate) {
+        r[i] = rFactor * r[i]
+        skillPoints[i]++
+      }
     }
     if (i % n == trigger & i < n) {
       _rSphere[i] = Math.pow(rFactor, 1) * rSphere[i]
@@ -223,6 +214,25 @@ function createShape(n, trigger, rFactor) {
       group.add(smallSphere);
       objects.push(smallSphere)
     }
+
+
+    if (i < n) {
+      let sprite = new THREE.TextSprite({
+        textSize: 7,
+        texture: {
+          text: `${skills[i]}: ${skillPoints[i]}`.toUpperCase(),
+          fontFamily: 'Arial, Helvetica, sans-serif',
+        },
+        material: {
+          color: 0x515151
+        },
+      });
+      sprite.position.x = (40 + _r[i]) * cos(i / n * 2 * pi)
+      sprite.position.y = (40 + _r[i]) * sin(i / n * 2 * pi)
+      sprite.position.z = 25
+      group.add(sprite);
+    }
+
   }
   console.log("rFactor:", rFactor)
   splineShape.splineThru(splinepts);
