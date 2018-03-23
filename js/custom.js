@@ -15,12 +15,12 @@ let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 let splineShape = new THREE.Shape();
 let splinepts = [];
-let n = 7
-let initialPts = 10
+let n = 9
+let initialPts = 20
 let pts = initialPts
 let r = []
+let rFactor = 1.05
 for (let i = 0; i <= n; i++) r.push(100)
-console.log(r)
 let z
 
 
@@ -39,7 +39,7 @@ function init() {
   info.style.top = '10px';
   info.style.width = '100%';
   info.style.textAlign = 'center';
-  info.innerHTML = `<br/><br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
+  info.innerHTML = `<br/>Click on a point to increase that stat. Click-drag to spin.<br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
   container.appendChild(info);
 
 
@@ -57,7 +57,7 @@ function init() {
 
   // set up group
   group = new THREE.Group();
-  group.position.y = 100
+  group.position.y = 130
   scene.add(group);
 
   // Load Textures
@@ -119,20 +119,17 @@ function createShape(n, trigger) {
   }
 
   for (let i = 0; i <= n; i++) {
-    console.log(r[i])
     let radius = 100
     if (i % n == trigger) {
-      console.log(r[i])
-      r[i] = 1.1 * r[i]
-      console.log(r[i])
+      r[i] = rFactor * r[i]
     }
 
     splinepts.push(new THREE.Vector2(r[i] * cos(i / n * 2 * pi), r[i] * sin(i / n * 2 * pi)));
     if (i < n) {
-      var sphere = new THREE.Mesh(new THREE.SphereGeometry(20, 5, 5), new THREE.MeshBasicMaterial({
+      var sphere = new THREE.Mesh(new THREE.SphereGeometry(25, 5, 5), new THREE.MeshBasicMaterial({
         color: 0xff0000,
         wireframe: true,
-        visible: true
+        visible: false
       }));
       sphere.position.x = r[i] * cos(i / n * 2 * pi)
       sphere.position.y = r[i] * sin(i / n * 2 * pi)
@@ -184,10 +181,8 @@ function addLineShape(shape, color, x, y, z, rx, ry, rz, s, n) {
 
 window.addEventListener("mousedown", (event) => {
 
-  console.log(event.target)
   z = event.target
   if (z.classList.contains("reset")) {
-    console.log("heuuo")
     for(let i=0; i<r.length; i++){
       r[i] = 100
     }
@@ -206,11 +201,9 @@ window.addEventListener("mousedown", (event) => {
   // calculate objects intersecting the picking ray
   var intersects = raycaster.intersectObjects(objects);
   if (pts > 0 & intersects.length > 0) {
-    console.log(intersects)
     pts--
-    info.innerHTML = `<br/><br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
+    info.innerHTML = `<br/>Click on a point to increase that stat. Click-drag to spin.<br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
     for (var i = 0; i < intersects.length; i++) {
-      console.log(intersects[0].object.name)
       createShape(n, intersects[0].object.name)
     }
   }
