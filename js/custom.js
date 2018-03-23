@@ -22,10 +22,11 @@ let r = []
 let rSphere = []
 let rSmall = 4
 let rDisk = 150
-let rCircle = 70
+let radCircle = 70
+let radSphere = 25
 // let rFactor = 1.008
-for (let i = 0; i <= n; i++) r.push(rCircle)
-for (let i = 0; i < n; i++) rSphere.push(25)
+for (let i = 0; i <= n; i++) r.push(radCircle)
+for (let i = 0; i < n; i++) rSphere.push(radSphere)
 let z
 let targetPoint
 let tween = null
@@ -192,8 +193,8 @@ function createShape(n, trigger, rFactor) {
       objects.push(sphere)
     }
     if (i < n) {
-      var smallSphere = new THREE.Mesh(new THREE.SphereGeometry(rSmall, 30, 30), new THREE.MeshLambertMaterial({
-        color: 0x515151,
+      var smallSphere = new THREE.Mesh(new THREE.SphereGeometry(rSmall, 30, 30), new THREE.MeshBasicMaterial({
+        color: 0x404040,
         wireframe: false,
         visible: true
       }));
@@ -238,10 +239,12 @@ window.addEventListener("mousedown", (event) => {
   z = event.target
   if (z.classList.contains("reset")) {
     for (let i = 0; i < r.length; i++) {
-      r[i] = 100
+      r[i] = radCircle
+      rSphere[i] = radSphere
     }
     pts = initialPts
-    createShape(n, Infinity, 1)
+    info.innerHTML = `<br/>Click on a point to increase that stat. Click-drag to spin.<br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
+    createShape(n)
     console.log("reset")
   }
 
