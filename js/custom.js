@@ -23,8 +23,9 @@ let rFactor = 1.05
 for (let i = 0; i <= n; i++) r.push(100)
 let z
 
-var position = { x : 0, y: 300 };
-var target = { x : 400, y: 50 };
+
+var position =  100
+var target = 150
 var tween = new TWEEN.Tween(position).to(target, 2000);
 
 
@@ -39,6 +40,8 @@ var tweenSphere = new THREE.Mesh(new THREE.SphereGeometry(25, 5, 5), new THREE.M
 tween.onUpdate(function(){
     tweenSphere.position.x = position.x;
     tweenSphere.position.y = position.y;
+    r[1] = position
+    createShape(n,"1")
 });
 
 
