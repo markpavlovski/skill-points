@@ -89,7 +89,7 @@ function init() {
 
   // set up group
   group = new THREE.Group();
-  group.position.y = 130
+  group.position.y = 150
   scene.add(group);
 
   // Load Textures
