@@ -125,7 +125,7 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
   stats = new Stats();
-  container.appendChild(stats.dom);
+  // container.appendChild(stats.dom);
 
 
   // WINDOW EVENTS
@@ -200,8 +200,7 @@ function createShape(n, trigger, rFactor) {
       sphere.name = `${i}`
       group.add(sphere);
       objects.push(sphere)
-    }
-    if (i < n) {
+
       var smallSphere = new THREE.Mesh(new THREE.SphereGeometry(rSmall, 30, 30), new THREE.MeshBasicMaterial({
         color: 0x404040,
         wireframe: false,
@@ -213,15 +212,14 @@ function createShape(n, trigger, rFactor) {
       smallSphere.name = `${i}`
       group.add(smallSphere);
       objects.push(smallSphere)
-    }
 
-
-    if (i < n) {
       let sprite = new THREE.TextSprite({
         textSize: 7,
+        redrawInterval: 0,
         texture: {
           text: `${skills[i]}: ${skillPoints[i]}`.toUpperCase(),
           fontFamily: 'Arial, Helvetica, sans-serif',
+          autoRedraw: true,
         },
         material: {
           color: 0x515151
@@ -232,6 +230,7 @@ function createShape(n, trigger, rFactor) {
       sprite.position.z = 25
       group.add(sprite);
     }
+
 
   }
   console.log("rFactor:", rFactor)
@@ -270,8 +269,15 @@ window.addEventListener("mousedown", (event) => {
       r[i] = radCircle
       rSphere[i] = radSphere
     }
+    skillPoints.forEach((val,i,arr)=>arr[i]=5)
     pts = initialPts
-    info.innerHTML = `<br/>Click on a point to increase that stat. Click-drag to spin.<br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
+    info.innerHTML = `
+      <br/>
+      Click on a point to increase that stat. Click-drag to spin.
+      <br/>
+      Points Remaining: ${pts}.
+      <a class="reset">RESET</a>
+    `;
     createShape(n)
     console.log("reset")
   }
@@ -288,7 +294,13 @@ window.addEventListener("mousedown", (event) => {
   var intersects = raycaster.intersectObjects(objects);
   if (pts > 0 & intersects.length > 0 & transitionEnded) {
     pts--
-    info.innerHTML = `<br/>Click on a point to increase that stat. Click-drag to spin.<br/>Points Remaining: ${pts}. <a class="reset">RESET</a>`;
+    info.innerHTML = `
+      <br/>
+      Click on a point to increase that stat. Click-drag to spin.
+      <br/>
+      Points Remaining: ${pts}.
+      <a class="reset">RESET</a>
+    `;
     for (var i = 0; i < intersects.length; i++) {
 
       TWEEN.removeAll();
